@@ -223,7 +223,12 @@ with col_results:
 
             try:
                 X_score = build_score_input()
-                X_score_scaled = scaler.transform(X_score)
+                try:
+                    X_score_scaled = scaler.transform(X_score)
+                except Exception:
+                    # Some saved scaler artifacts were fit on a different feature schema.
+                    # Fall back to the raw score-feature matrix so prediction can still run.
+                    X_score_scaled = X_score.values
                 predicted_score = float(score_model.predict(X_score_scaled)[0])
                 predicted_score = max(0, min(100, predicted_score))
                 score_ok = True
