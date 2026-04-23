@@ -279,7 +279,32 @@ with col_results:
 
             # Summary
             with st.expander("🔍 View Input Summary"):
-                st.write("Inputs displayed here")
+                summary = {
+                    "Year": year,
+                    "EBIT (USD M)": ebit,
+                    "ROE (%)": roe,
+                    "Revenue (USD M)": revenue,
+                    "Profit Margin (%)": profit_margin,
+                    "Market Cap (USD M)": market_cap,
+                    "Growth Rate (%)": growth_rate,
+                    "Environmental Score (E)": e_score,
+                    "Governance Score (G)": g_score,
+                    "CSR Spending (USD M)": csr,
+                    "% Energy from Renewables": percent_et,
+                    "% Water Recycled": percent_w,
+                    "Carbon Emissions (tonnes)": carbon_emissions,
+                    "Water Usage (m3)": water_usage,
+                    "Energy Consumption (MWh)": energy_consumption,
+                    "Industry": industry,
+                    "Region": region,
+                    "Company ID": company_id,
+                }
+                summary_df = (
+                    pd.DataFrame(summary, index=["Value"])
+                    .T
+                    .rename(columns={"Value": "Input"})
+                )
+                st.dataframe(summary_df, use_container_width=True)
 
 
 
