@@ -84,17 +84,26 @@ st.markdown("""
 # ── Model loading ──────────────────────────────────────────────────────────────
 MODEL_DIR = os.path.dirname(__file__)
 
+ARTIFACT_CANDIDATES = {
+    "score_model": ["esg_score_model.pkl"],
+    "scaler": ["scaler__1_.pkl", "scaler_1_ .pkl", "scaler__1_ .pkl", "scaler_1_.pkl"],
+    "score_features": ["esg_score_features.pkl"],
+}
+
+
+def resolve_artifact_path(candidates):
+    for fname in candidates:
+        path = os.path.join(MODEL_DIR, fname)
+        if os.path.exists(path):
+            return path
+    raise FileNotFoundError(f"Missing model artifact(s): {', '.join(candidates)}")
+
 @st.cache_resource(show_spinner="Loading models…")
 def load_artifacts():
     """Load all saved model artifacts. Returns dict or raises on failure."""
-    files = {
-    "score_model":    "esg_score_model.pkl",
-    "scaler":         "scaler__1_.pkl",
-    "score_features": "esg_score_features.pkl",
-}
     artifacts = {}
-    for key, fname in files.items():
-        path = os.path.join(MODEL_DIR, fname)
+    for key, candidates in ARTIFACT_CANDIDATES.items():
+        path = resolve_artifact_path(candidates)
         try:
             artifacts[key] = joblib.load(path)
         except Exception:
